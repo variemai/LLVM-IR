@@ -1,5 +1,5 @@
-#ifndef LLVM_FUNPASS_H
-#define LLVM_FUNPASS_H
+#ifndef LLVM_HELLOWORLD_H
+#define LLVM_HELLOWORLD_H
 
 #include "llvm/IR/PassManager.h"
 
@@ -12,4 +12,4 @@ public:
 
 } // namespace llvm
 
-#endif // LLVM_FUNPASS_H
+#endif

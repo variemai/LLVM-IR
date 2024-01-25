@@ -1,0 +1,4 @@
+#+title: Learning how to instrument code with LLVM infrastructure
+* Hello_Pass
+- Simple Pass following the code https://github.com/sampsyo/llvm-pass-skeleton
+- ~clang -fpass-plugin=`echo build/skeleton/SkeletonPass.*` something.c~
