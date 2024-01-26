@@ -7,7 +7,7 @@ using namespace llvm;
 
 namespace {
 
-struct HelloPass : public PassInfoMixin<HelloPass> {
+struct OpsPass : public PassInfoMixin<OpsPass> {
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM) {
         errs() << "I saw a module " << M.getName() << "!\n";
         for (auto &F : M.functions()) {
@@ -29,12 +29,12 @@ extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
     return {
         .APIVersion = LLVM_PLUGIN_API_VERSION,
-        .PluginName = "Hello pass",
+        .PluginName = "Ops Pass",
         .PluginVersion = "v0.1",
         .RegisterPassBuilderCallbacks = [](PassBuilder &PB) {
             PB.registerPipelineStartEPCallback(
                 [](ModulePassManager &MPM, OptimizationLevel Level) {
-                    MPM.addPass(HelloPass());
+                    MPM.addPass(OpsPass());
                 });
         }
     };
