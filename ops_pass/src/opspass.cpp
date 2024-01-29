@@ -9,9 +9,11 @@ using namespace llvm;
 namespace {
 
 struct OpsPass : public PassInfoMixin<OpsPass> {
-    // Counters for different operations
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM) {
+        unsigned bits = 0;
+        Type *type;
+        Value *bitsValue;
         for (auto &F : M.functions()) {
 
             // Get the function to call from our runtime library.
@@ -25,6 +27,8 @@ struct OpsPass : public PassInfoMixin<OpsPass> {
                 F.getParent()->getOrInsertFunction("recordFLOP", logFuncType);
             FunctionCallee recordIOPFunc =
                 F.getParent()->getOrInsertFunction("recordIOP", logFuncType);
+            FunctionCallee recordMemBytesOPFunc =
+                F.getParent()->getOrInsertFunction("recordMemBytesOP", logFuncType);
 
 
             bool isMain = (F.getName() == "main");
@@ -32,6 +36,13 @@ struct OpsPass : public PassInfoMixin<OpsPass> {
                 for ( auto &I : B) {
                     IRBuilder<> builder(&I);
                     switch (I.getOpcode()) {
+                        case Instruction::Ret:{
+                            if ( isMain ){
+                                builder.CreateCall(printFunc, {});
+                                return PreservedAnalyses::none();
+                            }
+                            break;
+                        }
                         case Instruction::Add:
                             builder.CreateCall(recordIOPFunc, {});
                             break;
@@ -59,11 +70,24 @@ struct OpsPass : public PassInfoMixin<OpsPass> {
                         case Instruction::FDiv:
                             builder.CreateCall(recordFLOPFunc, {});
                             break;
-                        case Instruction::Ret:
-                            if ( isMain ){
-                                builder.CreateCall(printFunc, {});
-                                return PreservedAnalyses::none();
-                            }
+
+                        case Instruction::Store:
+                        {
+                            auto *storeInst = dyn_cast<StoreInst>(&I);
+                            type = storeInst->getType();
+                            bits = type->getPrimitiveSizeInBits();
+                            bitsValue = ConstantInt::get(Type::getInt32Ty(Ctx), bits);
+                            builder.CreateCall(recordMemBytesOPFunc,{bitsValue});
+                            break;
+                        }
+                        case Instruction::Load:{
+                            auto *loadInst = dyn_cast<LoadInst>(&I);
+                            type = loadInst->getType();
+                            bits = type->getPrimitiveSizeInBits();
+                            bitsValue = ConstantInt::get(Type::getInt32Ty(Ctx), bits);
+                            builder.CreateCall(recordMemBytesOPFunc,{bitsValue});
+                            break;
+                        }
                     }
                 }
             }

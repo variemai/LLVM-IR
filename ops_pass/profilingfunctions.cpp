@@ -4,6 +4,7 @@
 extern "C" {
     unsigned long long flopCount = 0;
     unsigned long long iopCount = 0;
+    unsigned long long bitsCount = 0;
 
     void recordFLOP() {
         ++flopCount;
@@ -13,9 +14,13 @@ extern "C" {
         ++iopCount;
     }
 
+    void recordMemBytesOP(unsigned bits){
+        ++bitsCount;
+    }
+
     void printOPcounts() {
         std::cout << "=============Profiling Data===========\n" << "";
-        std::cout << "FLOPS: " << flopCount << "\nIOPS: "  << iopCount << "\n";
+        std::cout << "FLOPS: " << flopCount << "\nIOPS: "  << iopCount << "\nBytes accessed: " << bitsCount/8 << "\n";
         std::cout << "=============Profiling Data END========\n" << "";
     }
 }
