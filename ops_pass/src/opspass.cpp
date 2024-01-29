@@ -10,8 +10,6 @@ namespace {
 
 struct OpsPass : public PassInfoMixin<OpsPass> {
     // Counters for different operations
-    unsigned IOPS = 0;
-    unsigned FLOPS = 0;
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM) {
         for (auto &F : M.functions()) {
@@ -36,39 +34,30 @@ struct OpsPass : public PassInfoMixin<OpsPass> {
                     switch (I.getOpcode()) {
                         case Instruction::Add:
                             builder.CreateCall(recordIOPFunc, {});
-                            ++IOPS;
                             break;
                         case Instruction::Sub:
                             builder.CreateCall(recordIOPFunc, {});
-                            ++IOPS;
                             break;
                         case Instruction::Mul:
                             builder.CreateCall(recordIOPFunc, {});
-                            ++IOPS;
                             break;
                         case Instruction::UDiv:
                             builder.CreateCall(recordIOPFunc, {});
-                            ++IOPS;
                             break;
                         case Instruction::SDiv:
                             builder.CreateCall(recordIOPFunc, {});
-                            ++IOPS;
                             break;
                         case Instruction::FAdd:
                             builder.CreateCall(recordFLOPFunc, {});
-                            ++FLOPS;
                             break;
                         case Instruction::FSub:
                             builder.CreateCall(recordFLOPFunc, {});
-                            ++FLOPS;
                             break;
                         case Instruction::FMul:
                             builder.CreateCall(recordFLOPFunc, {});
-                            ++FLOPS;
                             break;
                         case Instruction::FDiv:
                             builder.CreateCall(recordFLOPFunc, {});
-                            ++FLOPS;
                             break;
                         case Instruction::Ret:
                             if ( isMain ){
@@ -99,63 +88,3 @@ llvmGetPassPluginInfo() {
         }
     };
 }
-
-              // HANDLE_BINARY_INST(13, Add  , BinaryOperator)
-                    // HANDLE_BINARY_INST(14, FAdd , BinaryOperator)
-                    // HANDLE_BINARY_INST(15, Sub  , BinaryOperator)
-                    // HANDLE_BINARY_INST(16, FSub , BinaryOperator)
-                    // HANDLE_BINARY_INST(17, Mul  , BinaryOperator)
-                    // HANDLE_BINARY_INST(18, FMul , BinaryOperator)
-                    // HANDLE_BINARY_INST(19, UDiv , BinaryOperator)
-                    // HANDLE_BINARY_INST(20, SDiv , BinaryOperator)
-                    // HANDLE_BINARY_INST(21, FDiv , BinaryOperator)
-                    // HANDLE_BINARY_INST(22, URem , BinaryOperator)
-                    // HANDLE_BINARY_INST(23, SRem , BinaryOperator)
-                    // HANDLE_BINARY_INST(24, FRem , BinaryOperator)
-
-
-                   // if (I.getOpcode() == Instruction::Add){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordIOPFunc, {});
-                    //      ++IOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::FAdd){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordFLOPFunc, {});
-                    //      ++FLOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::Sub){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordIOPFunc, {});
-                    //      ++IOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::FSub){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordFLOPFunc, {});
-                    //      ++FLOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::Mul){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordIOPFunc, {});
-                    //      ++IOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::FMul){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordFLOPFunc, {});
-                    //      ++FLOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::UDiv){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordIOPFunc, {});
-                    //      ++IOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::SDiv){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordIOPFunc, {});
-                    //      ++IOPS;
-                    // }
-                    // if (I.getOpcode() == Instruction::FDiv){
-                    //     IRBuilder<> builder(&I);
-                    //     builder.CreateCall(recordFLOPFunc, {});
-                    //      ++FLOPS;
-                    // }
