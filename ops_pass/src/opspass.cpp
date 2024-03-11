@@ -12,8 +12,8 @@ struct OpsPass : public PassInfoMixin<OpsPass> {
 
     PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM) {
         unsigned bits = 0;
-        Type *type;
-        Value *bitsValue;
+        Type *type, *valueType;
+        Value *bitsValue, *storedValue;
         for (auto &F : M.functions()) {
 
             // Get the function to call from our runtime library.
@@ -74,13 +74,19 @@ struct OpsPass : public PassInfoMixin<OpsPass> {
                         case Instruction::Store:
                         {
                             auto *storeInst = dyn_cast<StoreInst>(&I);
-                            type = storeInst->getType();
-                            bits = type->getPrimitiveSizeInBits();
+                            storedValue = storeInst->getValueOperand(); // Get the value stored
+                            valueType = storedValue->getType();
+                            bits = valueType->getPrimitiveSizeInBits();
                             bitsValue = ConstantInt::get(Type::getInt32Ty(Ctx), bits);
-                            builder.CreateCall(recordMemBytesOPFunc,{bitsValue});
+                            builder.CreateCall(recordMemBytesOPFunc, {bitsValue});
+                            // type = storeInst->getType();
+                            // bits = type->getPrimitiveSizeInBits();
+                            // bitsValue = ConstantInt::get(Type::getInt32Ty(Ctx), bits);
+                            // builder.CreateCall(recordMemBytesOPFunc,{bitsValue});
                             break;
                         }
-                        case Instruction::Load:{
+                        case Instruction::Load:
+                        {
                             auto *loadInst = dyn_cast<LoadInst>(&I);
                             type = loadInst->getType();
                             bits = type->getPrimitiveSizeInBits();

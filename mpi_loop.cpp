@@ -1,6 +1,6 @@
 #include <mpi.h>
 #include <cstdio>
-#define ARRAY_SIZE 1000000
+#define ARRAY_SIZE 1000
 
 int main(int argc, char *argv[]){
     int rank;

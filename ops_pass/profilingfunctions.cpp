@@ -15,7 +15,7 @@ extern "C" {
     }
 
     void recordMemBytesOP(unsigned bits){
-        ++bitsCount;
+        bitsCount+=bits;
     }
 
     void printOPcounts() {
